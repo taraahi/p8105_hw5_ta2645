@@ -30,7 +30,7 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
 
 
-# Problem 1
+## Problem 1
 
 ```{r}
 homicide_df = 
@@ -167,33 +167,38 @@ homicide_df %>%
 
 
 
-# Problem 2
+## Problem 2
 
 Make a spaghetti plot for each subject over time but they're all in different files. 
 
 ```{r}
-tibble(
-  files = list.files("./data/more_data")
-)
+data = list.files(path = "./data/more_data", 
+                  pattern = "*csv",
+                  full.names = T) %>% 
+  map_df(~read_csv(.)) %>% 
+  mutate(names = list.files("./data/more_data")) 
 
 ```
 
-Write function or use something liek that to iterate across this file name and read csv to import the files one by one, will get column of datasets.
+Write function or use something like that to iterate across this file name and read csv to import the files one by one, will get column of datasets.
 
 unnest the column and then you tidy the result, you want a control and experiment arm, it's in wide instead of long format, then make the plot. 
 
 
 
-# Problem 3
+## Problem 3
 
 ```{r}
 library(tidyverse)
 
 set.seed(10)
 
-iris_with_missing = iris %>% 
+iris_with_missing = 
+  iris %>% 
   map_df(~replace(.x, sample(1:150, 20), NA)) %>%
-  mutate(Species = as.character(Species))
+  mutate(Species = as.character(Species)) %>% 
+  janitor::clean_names()
+
 ```
 
 There are a few missing values, write a function:
@@ -201,23 +206,28 @@ There are a few missing values, write a function:
 ```{r}
 fill_in_function = function(vector) {
   
-  if (is.numeric) {
-    
-    ...
+  if (is.numeric(vector)) {
+    vector = ifelse(is.na(vector), mean(vector, na.rm = TRUE),vector)  
   }
   
-  if (is.charactger) {
-    
-    ...
+  if (is.character(vector)) {
+    vector = ifelse(is.na(vector), "virginica", vector)
   }
-  
+  return(vector)
   
 }
 ```
 
+Map across each column and apply the function, put back together as dataframe 
 
-map across each column and apply the function, put back together as dataframe 
-
-
-
-
+```{r}
+output = map_dfr(iris_with_missing, fill_in_function, .id = "input")
+```
+         
+         
+         
+         
+         
+         
+         
+         
