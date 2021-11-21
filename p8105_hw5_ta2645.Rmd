@@ -187,11 +187,11 @@ Next, I want to create a new column that designates whether a participant is in 
 category_function = function(x) {
   
   if (starts_with("con")) {
-    group = "Control"  
+    arm = "Control"  
   }
   
   if (starts_with("exp")) {
-    group = "Experiment"
+    arm = "Experiment"
   }
   
 }
@@ -254,13 +254,18 @@ fill_in_function = function(vector) {
 }
 ```
 
-Map across each column and apply the function, put back together as dataframe 
+Map across each column and apply the function, put back together as dataframe: 
 
 ```{r}
 output = map_dfr(iris_with_missing, fill_in_function, .id = "input")
+
+output
 ```
          
-         
+It's all filled in now.
+
+
+FIN
          
          
          
